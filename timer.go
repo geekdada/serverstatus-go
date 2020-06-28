@@ -43,8 +43,8 @@ func setUpTimer(conn net.Conn, ipType int) {
 			HDDUsed:     diskUsed,
 			Cpu:         getCpuPercent(),
 			IpStatus:    true,
-			NetworkRx:   uint64(ns.netrx),
-			NetworkTx:   uint64(ns.netrx),
+			NetworkRx:   ns.netrx,
+			NetworkTx:   ns.netrx,
 			NetworkIn:   networkIn,
 			NetworkOut:  networkOut,
 			Online4:     online4,
@@ -76,7 +76,7 @@ func setUpTimer(conn net.Conn, ipType int) {
 		}
 
 		// 转换间隔为时间间隔
-		inter := time.Duration(config.Interval)
+		inter := time.Second * time.Duration(config.Interval)
 
 		// 间隔
 		time.Sleep(inter)
