@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"net"
 	"strings"
@@ -16,12 +17,17 @@ func setupDaemon(addr, password, user string) {
 			continue
 		}
 
-		setUpTimer(conn, ipType)
+		err = setUpTimer(conn, ipType)
+
+		if err != nil {
+			time.Sleep(time.Second)
+			continue
+		}
 	}
 }
 
 func setupConnection(addr, password, user string) (net.Conn, int, error) {
-	logf("Connecting...")
+	logger.Println("Connecting...")
 
 	ipType := 4
 	conn, err := net.DialTimeout("tcp", addr, 10*time.Second)
@@ -69,7 +75,7 @@ func setupConnection(addr, password, user string) (net.Conn, int, error) {
 			return nil, 0, err
 		}
 
-		logf("%s\n", res)
+		fmt.Printf("%s\n", res)
 
 		if strings.Contains(res, "IPv4") {
 			ipType = 4
@@ -82,7 +88,7 @@ func setupConnection(addr, password, user string) (net.Conn, int, error) {
 }
 
 func destroyConn(conn net.Conn) {
-	logf("Disconnecting...")
+	logger.Println("Disconnecting...")
 
 	err := conn.Close()
 

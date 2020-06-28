@@ -17,7 +17,15 @@ import (
 
 var ns = netSpeed{}
 
-func setUpTimer(conn net.Conn, ipType int) {
+func setUpTimer(conn net.Conn, ipType int) error {
+	defer func() {
+		err := conn.Close()
+
+		if err != nil {
+			logger.Printf("Close connection error: %s\n", err.Error())
+		}
+	}()
+
 	go poolSpeed()
 	go startProbe()
 
@@ -72,7 +80,8 @@ func setUpTimer(conn net.Conn, ipType int) {
 		// 发送实时数据
 		_, err = conn.Write([]byte("update " + string(jsonStr) + "\n"))
 		if err != nil {
-			logger.Fatalf("Can not send data: %s", err.Error())
+			logger.Printf("Can not send data: %s\n", err.Error())
+			return err
 		}
 
 		// 转换间隔为时间间隔
