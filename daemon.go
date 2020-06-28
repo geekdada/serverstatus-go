@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"net"
 	"strings"
@@ -75,7 +74,7 @@ func setupConnection(addr, password, user string) (net.Conn, int, error) {
 			return nil, 0, err
 		}
 
-		fmt.Printf("%s\n", res)
+		logger.Printf("%s\n", res)
 
 		if strings.Contains(res, "IPv4") {
 			ipType = 4

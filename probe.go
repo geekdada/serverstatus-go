@@ -19,6 +19,7 @@ var pingTime = map[string]int{
 	"189":   0,
 	"10086": 0,
 }
+var oneHour, _ = time.ParseDuration("1h")
 
 func startProbe() {
 	go startPing(config.CM, "10086")
@@ -55,13 +56,13 @@ func startPing(host, mark string) {
 		pingTime[mark] = int(result.TotalDuration)
 		ptLock.Unlock()
 
-		if allPacket > 60 {
-			lrLock.Lock()
-			lostRate[mark] = float64(lostPacket) / float64(allPacket)
-			lrLock.Unlock()
-		}
+		lrLock.Lock()
+		lostRate[mark] = float64(lostPacket) / float64(allPacket)
+		lrLock.Unlock()
 
-		if time.Since(startTime) > 3600*1000 {
+		logf("allPacket: %d, lostPacket: %d", allPacket, lostPacket)
+
+		if time.Since(startTime) > oneHour {
 			lostPacket = 0
 			allPacket = 0
 			startTime = time.Now()

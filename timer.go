@@ -19,6 +19,7 @@ var ns = netSpeed{}
 
 func setUpTimer(conn net.Conn, ipType int) error {
 	defer func() {
+		logger.Println("Disconnect due to broken connection")
 		err := conn.Close()
 
 		if err != nil {
