@@ -53,7 +53,7 @@ func startPing(host, mark string) {
 		allPacket += result.Counter
 		lostPacket += result.Counter - result.SuccessCounter
 		ptLock.Lock()
-		pingTime[mark] = int(result.TotalDuration)
+		pingTime[mark] = int(result.TotalDuration / 1e6)
 		ptLock.Unlock()
 
 		lrLock.Lock()
