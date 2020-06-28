@@ -1,0 +1,16 @@
+[Unit]
+Description=serverstatus-go
+After=network.target
+
+[Service]
+Type=simple
+User=nobody
+Group=nogroup
+LimitNOFILE=32768
+ExecStart=/usr/local/bin/serverstatus-go -server Server -user User -p Password
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=serverstatus-go
+
+[Install]
+WantedBy=multi-user.target
