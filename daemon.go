@@ -41,7 +41,7 @@ func setupConnection(addr, password, user string) (net.Conn, int, error) {
 	_, err = conn.Read(buf)
 
 	if err != nil && err != io.EOF {
-		logger.Printf("Read server data faild: %s\n", err.Error())
+		logger.Printf("Read server data failed: %s\n", err.Error())
 		destroyConn(conn)
 		return nil, 0, err
 	}
@@ -52,7 +52,7 @@ func setupConnection(addr, password, user string) (net.Conn, int, error) {
 		_, err := conn.Write([]byte(user + ":" + password + "\n"))
 
 		if err != nil {
-			logger.Printf("Send authentication required faild: %s\n", err.Error())
+			logger.Printf("Send authentication required failed: %s\n", err.Error())
 			destroyConn(conn)
 			return nil, 0, err
 		}
@@ -61,7 +61,7 @@ func setupConnection(addr, password, user string) (net.Conn, int, error) {
 		_, err = conn.Read(buf)
 
 		if err != nil && err != io.EOF {
-			logger.Printf("Read authentication required faild: %s\n", err.Error())
+			logger.Printf("Read authentication required failed: %s\n", err.Error())
 			destroyConn(conn)
 			return nil, 0, err
 		}
@@ -69,7 +69,7 @@ func setupConnection(addr, password, user string) (net.Conn, int, error) {
 		res := string(buf)
 
 		if !strings.Contains(res, "Authentication successful") {
-			logger.Printf("Authentication required faild: %s\n", res)
+			logger.Printf("Authentication failed: %s\n", res)
 			destroyConn(conn)
 			return nil, 0, err
 		}

@@ -1,20 +1,21 @@
 package main
 
 import (
-	tcping "github.com/cloverstd/tcping/ping"
-
+	"fmt"
 	"sync"
 	"time"
+
+	tcping "github.com/cloverstd/tcping/ping"
 )
 
 var lrLock sync.Mutex
-var lostRate = map[string]float64{
+var lostRate = &map[string]float64{
 	"10010": 0.0,
 	"189":   0.0,
 	"10086": 0.0,
 }
 var ptLock sync.Mutex
-var pingTime = map[string]int{
+var pingTime = &map[string]int{
 	"10010": 0,
 	"189":   0,
 	"10086": 0,
@@ -52,16 +53,19 @@ func startPing(host, mark string) {
 		result := httpPing.Result()
 		allPacket += result.Counter
 		lostPacket += result.Counter - result.SuccessCounter
-		ptLock.Lock()
-		pingTime[mark] = int(result.TotalDuration / 1e6)
-		ptLock.Unlock()
 
+		duration := int(result.TotalDuration / 1e6) // ns -> ms
+		rate := float64(lostPacket) / float64(allPacket)
+
+		ptLock.Lock()
 		lrLock.Lock()
-		lostRate[mark] = float64(lostPacket) / float64(allPacket)
+		(*pingTime)[mark] = duration
+		(*lostRate)[mark] = rate
+		ptLock.Unlock()
 		lrLock.Unlock()
 
 		logf("allPacket: %d, lostPacket: %d", allPacket, lostPacket)
-
+		fmt.Println(mark, lostRate)
 		if time.Since(startTime) > oneHour {
 			lostPacket = 0
 			allPacket = 0

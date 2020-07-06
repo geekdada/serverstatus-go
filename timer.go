@@ -62,12 +62,12 @@ func setUpTimer(conn net.Conn, ipType int) error {
 			Udp:         udp,
 			Process:     ps,
 			Thread:      th,
-			Ping10010:   lostRate["10010"] * 100,
-			Ping189:     lostRate["189"] * 100,
-			Ping10086:   lostRate["10086"] * 100,
-			Time10010:   pingTime["10010"],
-			Time189:     pingTime["189"],
-			Time10086:   pingTime["10086"],
+			Ping10010:   (*lostRate)["10010"] * 100,
+			Ping189:     (*lostRate)["189"] * 100,
+			Ping10086:   (*lostRate)["10086"] * 100,
+			Time10010:   (*pingTime)["10010"],
+			Time189:     (*pingTime)["189"],
+			Time10086:   (*pingTime)["10086"],
 		}
 
 		// 转换为Json数据
