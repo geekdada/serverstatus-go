@@ -41,7 +41,7 @@ func startPing(host, mark string) {
 			Protocol: tcping.HTTP,
 			Counter:  1,
 			Interval: time.Second,
-			Timeout:  time.Second * 10,
+			Timeout:  time.Second * 3,
 		}
 		httpPing := tcping.NewTCPing()
 		httpPing.SetTarget(pingTarget)

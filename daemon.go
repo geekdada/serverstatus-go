@@ -32,7 +32,7 @@ func setupConnection(addr, password, user string) (net.Conn, int, error) {
 	conn, err := net.DialTimeout("tcp", addr, 10*time.Second)
 
 	if err != nil {
-		logger.Printf("Can not connection server: %s\n", err.Error())
+		logger.Printf("Can not connect to server: %s\n", err.Error())
 		destroyConn(conn)
 		return nil, 0, err
 	}
@@ -89,9 +89,11 @@ func setupConnection(addr, password, user string) (net.Conn, int, error) {
 func destroyConn(conn net.Conn) {
 	logger.Println("Disconnecting...")
 
-	err := conn.Close()
+	if conn != nil {
+		err := conn.Close()
 
-	if err != nil {
-		logger.Printf("Close connection error: %s\n", err.Error())
+		if err != nil {
+			logger.Printf("Close connection error: %s\n", err.Error())
+		}
 	}
 }
