@@ -1,6 +1,10 @@
 package main
 
 import (
+	"github.com/getsentry/sentry-go"
+	"log"
+	"time"
+
 	"flag"
 	"fmt"
 	"os"
@@ -23,12 +27,14 @@ func main() {
 		Port     int
 		User     string
 		Password string
+		Sentry   bool
 	}
 
 	flag.StringVar(&flags.Server, "server", "", "server address")
 	flag.StringVar(&flags.User, "user", "", "user")
 	flag.IntVar(&flags.Port, "port", 35601, "port")
 	flag.StringVar(&flags.Password, "password", "USER_DEFAULT_PASSWORD", "user")
+	flag.BoolVar(&flags.Sentry, "sentry", false, "use Sentry")
 	flag.IntVar(&config.Interval, "interval", 1, "update interval(s)")
 	flag.IntVar(&config.ProbePort, "probe-port", 80, "probe port")
 	flag.StringVar(&config.CU, "probe-cu-host", "cu.tz.cloudcpp.com", "China Unicom probe host")
@@ -40,6 +46,16 @@ func main() {
 	if flags.Server == "" || flags.User == "" {
 		flag.Usage()
 		return
+	}
+
+	if flags.Sentry {
+		err := sentry.Init(sentry.ClientOptions{
+			Dsn: "https://7a776e797a044b34b6db9bc4905b3437@o45713.ingest.sentry.io/5310005",
+		})
+		if err != nil {
+			log.Fatalf("sentry.Init: %s", err)
+		}
+		defer sentry.Flush(2 * time.Second)
 	}
 
 	addr := fmt.Sprintf("%s:%d", flags.Server, flags.Port)
